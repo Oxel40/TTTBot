@@ -23,9 +23,9 @@ def check_win(field, move):
 		win = True
 	
 	if r % 2 == 0 and field[4] == 1 and win == False:
-		if field[0] == 1 == field[6]:
+		if field[0] == 1 == field[8]:
 			win = True
-		if field[2] == 1 == field[8]:
+		if field[2] == 1 == field[6]:
 			win = True
 
 	return win
