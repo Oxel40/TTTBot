@@ -14,7 +14,7 @@ def alowed_moves(board):
 
 #Checks if a move is alowed
 def check_move(board, move):
-	return (alowed_moves(board) == move).any()
+	return (alowed_moves(board) == ((move + 2) / 3)).any()
 
 #Combindes the board with a move
 def make_move(board, move):
@@ -57,7 +57,7 @@ sess = tf.Session()
 sess.run(tf.global_variables_initializer())
 
 #Some testing
-board = [0., 0., 0., 1., 1., 1., 0., 0., 0.]
+board = [0., 0., -1., 1., 1., 1., 0., -1., 0.]
 test = sess.run(y, feed_dict={x: [board]})
 ntest = norm_move(test)
 nboard = make_move(board, ntest)
