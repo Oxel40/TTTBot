@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import tensorflow as tf
 import numpy as np
+import copy
 
 #normalizes a move to only contain one 1 and eight 0
 def norm_move(move):
@@ -18,8 +19,9 @@ def check_move(board, move):
 
 #Combindes the board with a move
 def make_move(board, move):
-	board[np.argmax(move)] = 1.
-	return board
+	out = copy.copy(board)
+	out[np.argmax(move)] = 1.
+	return out
 
 #Checks if there is a win
 def check_win(board):
@@ -57,7 +59,7 @@ sess = tf.Session()
 sess.run(tf.global_variables_initializer())
 
 #Some testing
-board = [0., 0., -1., 1., 1., 1., 0., -1., 0.]
+board = np.array([0., 0., 0., 0., 0., 0., 0., 0., 0.])
 test = sess.run(y, feed_dict={x: [board]})
 ntest = norm_move(test)
 nboard = make_move(board, ntest)
