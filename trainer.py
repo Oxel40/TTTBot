@@ -9,27 +9,32 @@ def norm_move(move):
 	return out
 
 #Returns alowed moves in a numpy array
-def alowed_moves(field):
-	return np.array(list(map(lambda x : ((x**2)-1)**2, field)))
+def alowed_moves(board):
+	return np.array(list(map(lambda x : ((x**2)-1)**2, board)))
 
 #Checks if a move is alowed
-def check_move(field, move):
-	return (alowed_moves(field) == move).any()
+def check_move(board, move):
+	return (alowed_moves(board) == move).any()
+
+#Combindes the board with a move
+def make_move(board, move):
+	board[np.argmax(move)] = 1.
+	return board
 
 #Checks if there is a win
-def check_win(field):
+def check_win(board):
 	win = False
 	
-	f = np.reshape(field, [3, 3])	
+	f = np.reshape(board, [3, 3])	
 	for x in range(3):
 		if (np.unique(f[x]) == [1]).all() or (np.unique(f.T[x]) == [1]).all():
 			win = True
 	
-	r = np.argmax(field)
-	if r % 2 == 0 and field[4] == 1 and win == False:
-		if field[0] == 1 == field[8]:
+	r = np.argmax(board)
+	if r % 2 == 0 and board[4] == 1 and win == False:
+		if board[0] == 1 == board[8]:
 			win = True
-		if field[2] == 1 == field[6]:
+		if board[2] == 1 == board[6]:
 			win = True
 
 	return win
@@ -52,14 +57,18 @@ sess = tf.Session()
 sess.run(tf.global_variables_initializer())
 
 #Some testing
-board = [0., 0., 0., 0., 0., 0., 0., 0., 0.]
+board = [0., 0., 0., 1., 1., 1., 0., 0., 0.]
 test = sess.run(y, feed_dict={x: [board]})
 ntest = norm_move(test)
+nboard = make_move(board, ntest)
+print("Board:", board)
 print("Move:", test)
 print("Norm move:", ntest)
 print("Alowed:", alowed_moves(board))
 print("Check move:", check_move(board, ntest))
-print("Check win:", check_win(ntest))
+print("New board:", nboard)
+print(np.reshape(nboard, [3, 3]))
+print("Check win:", check_win(nboard))
 
 #Close session
 sess.close()
