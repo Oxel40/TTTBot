@@ -72,7 +72,7 @@ sess = tf.Session()
 sess.run(tf.global_variables_initializer())
 
 #Training
-for step in range(100):
+for game in range(1):
 	board = np.array([0., 0., 0., 0., 0., 0., 0., 0., 0.])
 	moves = [[], []]#move[0] is the inputed board layout, move[1] is the outputed move
 	win = False
@@ -87,18 +87,26 @@ for step in range(100):
 				moves[0].append(board)
 				moves[1].append(move)
 				board = make_move(board, move)
+				#print(np.reshape(move, [3,3]), "m")
 				break
 			else:
 				if (move == move2).all():
 					alowed = alowed_moves(board)
 					i_alowed = [index for index, value in enumerate(alowed) if value == 1]
-					rmove = alowed[random.choice(i_alowed)]
+					#rmove = alowed[random.choice(i_alowed)]###WRONG
+					rmove = np.zeros([9])
+					rmove[random.choice(i_alowed)] = 1
 					moves[0].append(board)
 					moves[1].append(rmove)
 					board = make_move(board, rmove)
+					#print(np.reshape(rmove, [3,3]), "r")
 		if check_win(board):
 			win = True
+			print("-"*10, "Turn:", turn, "Game:", game)
+			print(np.reshape(board, [3, 3]) *(-1/(((turn % 2)*2)-1)), "\n")
 			break
+		print("-"*10, "Turn:", turn, "Game:", game)
+		print(np.reshape(board, [3, 3]) *(-1/(((turn % 2)*2)-1)), "\n")
 		board *= -1
 			
 	if win:
@@ -111,23 +119,23 @@ for step in range(100):
 		for index in range(0, turn + 1):
 			inputs.append(moves[0][index])
 			lables.append(non_losing_moves(moves[0][index], moves[1][index]))
-	print(step, turn)
-	print(np.reshape(board, [3, 3]))
+	print(inputs)
+	print(lables)
 	#loss = tf.losses.softmax_cross_entropy()
 
 #Some testing
-board = np.array([0., 0., 0., 0., 0., 0., 0., 0., 0.])
-test = sess.run(y, feed_dict={x: [board]})
-ntest = norm_move(test)[0]
-nboard = make_move(board, ntest)
-print("Board:", board)
-print("Move:", test)
-print("Norm move:", ntest)
-print("Alowed:", alowed_moves(board))
-print("Check move:", check_move(board, ntest))
-print("New board:", nboard)
-print(np.reshape(nboard, [3, 3]))
-print("Check win:", check_win(nboard))
+#board = np.array([0., 0., 0., 0., 0., 0., 0., 0., 0.])
+#test = sess.run(y, feed_dict={x: [board]})
+#ntest = norm_move(test)[0]
+#nboard = make_move(board, ntest)
+#print("Board:", board)
+#print("Move:", test)
+#print("Norm move:", ntest)
+#print("Alowed:", alowed_moves(board))
+#print("Check move:", check_move(board, ntest))
+#print("New board:", nboard)
+#print(np.reshape(nboard, [3, 3]))
+#print("Check win:", check_win(nboard))
 
 #Close session
 sess.close()
