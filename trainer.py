@@ -56,10 +56,10 @@ x = tf.placeholder(tf.float32, shape=[None, 9], name = "x")
 y_ = tf.placeholder(tf.float32, shape=[None, 9], name = "y_")
 
 #Define Weights
-W1 = tf.Variable(tf.random_normal(shape=[9, 32]))
-W2 = tf.Variable(tf.random_normal(shape=[32, 9]))
+W1 = tf.Variable(tf.random_normal(shape=[9, 32]), name = "W1")
+W2 = tf.Variable(tf.random_normal(shape=[32, 9]), name = "W2")
 
-b1 = tf.Variable(tf.random_normal(shape=[9]))
+b1 = tf.Variable(tf.random_normal(shape=[9]), name = "b1")
 
 #Define Graph
 y = tf.nn.sigmoid(tf.matmul(tf.nn.tanh(tf.matmul(x, W1)), W2) + b1, name = "y")
@@ -69,12 +69,14 @@ loss = tf.losses.softmax_cross_entropy(y_, y)
 optimizer = tf.train.GradientDescentOptimizer(0.1)
 train = optimizer.minimize(loss)
 
+saver = tf.train.Saver(save_relative_paths = True)
+
 #Initialize a session and variables
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())
 
 #Training
-for game in range(100000):
+for game in range(100):
 	board = np.array([0., 0., 0., 0., 0., 0., 0., 0., 0.])
 	moves = [[], []]#move[0] is the inputed board layout, move[1] is the outputed move
 	win = False
@@ -141,5 +143,14 @@ print("Norm move:", ntest)
 #print(np.reshape(nboard, [3, 3]))
 #print("Check win:", check_win(nboard))
 
+save_path = saver.save(sess, "model/champion")
+print("Model saved in path: %s" % save_path)
+
 #Close session
 sess.close()
+
+if __name__ == "__main__":
+	print("Hello")
+
+
+
