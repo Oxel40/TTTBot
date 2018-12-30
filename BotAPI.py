@@ -69,7 +69,7 @@ class Bot:
 			return move if found else np.zeros([3, 3])
 		
 		
-		def Train(self, data, labels):
+		def Train(self, data, labels, save=True, log=True, rate=0.1):
 			ndata = []
 			nlabels = []
 			for n in data:
@@ -83,15 +83,20 @@ class Bot:
 			y = graph.get_tensor_by_name(self.name+"y:0")
 			
 			loss = tf.losses.softmax_cross_entropy(y_, y)
-			optimizer = tf.train.GradientDescentOptimizer(0.1)
+			optimizer = tf.train.GradientDescentOptimizer(rate)
 			train = optimizer.minimize(loss)
 			
 			self.sess.run(train, feed_dict={self.name+"y_:0": np.array(nlabels), self.name+"x:0": np.array(ndata)})
 			
 			#saver = tf.train.Saver(save_relative_paths = True)
 			#save_path = saver.save(self.sess, "model/{0}/{0}".format(self.name))
-			#save_path = self.Save()
-			#print("{0} trained and saved in path: {1}".format(self.name, save_path))
+			if save and log:
+				save_path = self.Save()
+				print("{0} trained and saved in path: {1}".format(self.name, save_path))
+			elif save:
+				save_path = self.Save()
+			elif log:
+				print("{0} trained".format(self.name))
 		
 		
 		def Save(self):
@@ -106,9 +111,12 @@ class Bot:
 			return save_path
 			
 
+#some testing
 if __name__ == "__main__":
 	e = Bot()
-	e.NewBot("Charlie")#if Charlie needs to be created
+	if e.LoadBot("Charlie") == False:
+		e.NewBot("Charlie")
+	#e.NewBot("Charlie")#if Charlie needs to be created
 	#e.LoadBot("Charlie")
 	print(e.MakeMove(np.array([[1, -1, 1], [-1, 1, -1], [-1, 1, -1]])))
 	boards = [np.array([[0, 0, 0], [0, 0, 0], [ 0, 0, 0]]), np.array([[0, 0, 0], [0, 1, 0], [0, 0, 0]])]
