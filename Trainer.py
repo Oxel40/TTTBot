@@ -24,11 +24,11 @@ def make_move(board, move):
 #Checks if there is a win
 def check_win(board):
 	win = False
-	
+
 	for x in range(3):
 		if (np.unique(board[x]) == [1]).all() or (np.unique(board.T[x]) == [1]).all():
 			win = True
-	
+
 	f = np.reshape(board, [9])
 	r = np.argmax(f)
 	if r % 2 == 0 and f[4] == 1 and win == False:
@@ -65,7 +65,7 @@ for b in bots:
 games = 20
 if args.games:
 	games = args.games
-print(games, "games will be played")	
+print(games, "games will be played")
 
 
 
@@ -109,7 +109,7 @@ for game in range(int(games)):
 			make_move(board, move)#####HOW!!!
 			#print(board, "r")
 			#print("-"*20)
-		
+
 		if check_win(board):
 			win = True
 			#print("-"*10, "Turn:", turn, "Game:", game)
@@ -118,7 +118,7 @@ for game in range(int(games)):
 		#print("-"*10, "Turn:", turn, "Game:", game)
 		#print(np.reshape(board, [3, 3]) *(-1/(((turn % 2)*2)-1)), "\n")
 		board *= -1
-			
+
 	if win:
 		inputs.extend(moves[0][turn % 2 :: 2])#Wining moves
 		lables.extend(moves[1][turn % 2 :: 2])#
@@ -129,13 +129,13 @@ for game in range(int(games)):
 		for index in range(0, turn + 1):
 			inputs.append(moves[0][index])
 			lables.append(non_losing_moves(moves[0][index], moves[1][index]))
-	
-	#for te in range(len(inputs)):	
+
+	#for te in range(len(inputs)):
 	#	print(inputs[te])
 	#	print(lables[te])
 	#print(moves)
 	c.Train(inputs, lables, save = False, log = False)
-	
+
 	if len(bots) < 1:
 		d.Train(inputs, lables, save = False, log = False)
 	#print(game)
