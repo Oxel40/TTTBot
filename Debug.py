@@ -19,7 +19,7 @@ if __name__ == "__main__":
         cleverBot.NewBot("Tom")
 
     #Create the game board
-    app = Board(root, cleverBot.MakeMove)
+    app = Board(root, cleverBot.Click_Coords)
 
     root.mainloop()
     for elem in cleverBot.Decision:

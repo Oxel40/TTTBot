@@ -68,6 +68,7 @@ class Bot:
 			move = np.reshape(move, [3, 3])
 			return move if found else np.zeros([3, 3])
 
+
 		def Train(self, data, labels, save=True, log=True, rate=0.1):
 			ndata = []
 			nlabels = []
@@ -102,7 +103,7 @@ class Bot:
 			#save_path = self.Save()
 			#print("{0} trained and saved in path: {1}".format(self.name, save_path))
 
-	
+
 		def Save(self):
 			try:
 				os.mkdir("model")
@@ -115,11 +116,23 @@ class Bot:
 			return save_path
 
 
+		def Click_Coords(self, GameMatrixState):
+			move = self.MakeMove(GameMatrixState)
+			#Get the coordinates of the element with the
+			#highest probability value
+			clickCords = self.MaxCords(move)
+			#collect some data in the process
+			decision = np.zeros((3,3))
+			decision[clickCords[0],clickCords[1]] = 1
+			self.Decision.append((copy(GameMatrixState), decision))
+			return clickCords
+
+
 if __name__ == "__main__":
 	e = Bot()
-	e.NewBot("Charlie")#if Charlie needs to be created
+	e.NewBot("Tom")#if Charlie needs to be created
 	#e.LoadBot("Charlie")
 	print(e.MakeMove(np.array([[1, -1, 1], [-1, 1, -1], [-1, 1, -1]])))
-	boards = [np.array([[0, 0, 0], [0, 0, 0], [ 0, 0, 0]]), np.array([[0, 0, 0], [0, 1, 0], [0, 0, 0]])]
-	moves = [np.array([[0, 0, 0], [0, 1, 0], [0, 0, 0]]), np.array([[0, 0, 0], [0, 1, 0], [0, 0, 0]])]
+	boards = [np.array([[0, 0, 0], [0, 0, 0], [ 0, 0, 0]]), np.array([[0, 0, 0], [0, -1, 0], [0, 0, 0]])]
+	moves = [np.array([[0, 0, 0], [0, 1, 0], [0, 0, 0]]), np.array([[0, 0, 0], [1, 0, 0], [0, 0, 0]])]
 	e.Train(boards, moves)
