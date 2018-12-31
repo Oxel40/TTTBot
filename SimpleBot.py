@@ -1,9 +1,10 @@
 import numpy as np
 from random import random
+from copy import copy
 
 class SimpleBot():
     def __init__(self):
-        self._Decisions = []
+        self.Decisions = []
     def MakeMove(self, GameMatrixState):
         #Given the current state of the game,
         #given by GameMatrixState
@@ -23,7 +24,7 @@ class SimpleBot():
         #Store the decision made by the bot in a list
         decision = np.zeros((3,3))
         decision[clickCords[0], clickCords[1]] = 1
-        self._Decisions.append((GameMatrixState, decision))
+        self.Decisions.append((copy(GameMatrixState), decision))
         #click the button with those coordinates
         return clickCords
 
@@ -37,4 +38,4 @@ class SimpleBot():
                     max = GuessMatrix[i,j]
         return maxcords
     def Clear_Decisionlist(self):
-        self._Decisions = []
+        self.Decisions = []

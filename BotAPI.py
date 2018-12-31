@@ -12,12 +12,12 @@ class Bot:
 	with tf.Session() as sess:
 		def __init__(self):
 			self.name = None
-			
-		
+			self.Decision = []
+
 		def NewBot(self, new_name):
 			#NOTE: This funktion overwrites any existing models with same name!
 			self.name = new_name
-			
+
 			#Define Placeholders
 			x = tf.placeholder(tf.float32, shape=[None, 9], name = "x")
 			y_ = tf.placeholder(tf.float32, shape=[None, 9], name = "y_")
@@ -30,15 +30,15 @@ class Bot:
 
 			#Define Graph
 			y = tf.nn.sigmoid(tf.matmul(tf.nn.tanh(tf.matmul(x, W1)), W2) + b1, name = "y")
-			
+
 			#Initialize Graph
 			self.sess.run(tf.global_variables_initializer())
-			
+
 			saver = tf.train.Saver(save_relative_paths = True)
 			save_path = saver.save(self.sess, "model/{0}/{0}".format(self.name))
 			print("{0} created and saved in path: {1}".format(self.name, save_path))
-			
-		
+
+
 		def LoadBot(self, name):
 			try:
 				saver = tf.train.import_meta_graph("model/{0}/{0}.meta".format(name))
@@ -47,8 +47,8 @@ class Bot:
 				self.name = name
 			except:
 				print("Could not locate {0}. Make sure the directory model/{0}/ exists and that it contains all necessary files".format(name))
-				
-				
+
+
 		def MakeMove(self, board):
 			#NOTE: If no alowed move is found then this funktion returns a 3x3 array of zeros.
 			found = False
@@ -64,35 +64,52 @@ class Bot:
 					found = True
 					break
 				pred[np.argmax(pred)] = 0
-				
+
 			move = np.reshape(move, [3, 3])
-			
-			return move if found else np.zeros([3, 3])
-		
-		
+
+			#Get the coordinates of the button with
+			#the highest probability value
+			clickCords = MaxCords(move)
+			#collect some data in the process
+			decision = np.zeros((3,3))
+			decision[clickCords[0],clickCords[1]] = 1
+			self.Decision.append((copy(board), decision))
+
+			return clickCords
+
+
 		def Train(self, data, labels):
 			ndata = []
 			nlabels = []
 			for n in data:
 				ndata.append(np.reshape(n, [9]))
-			
+
 			for n in labels:
 				nlabels.append(np.reshape(n, [9]))
-			
+
 			graph = tf.get_default_graph()
 			y_ = graph.get_tensor_by_name("y_:0")
 			y = graph.get_tensor_by_name("y:0")
-			
+
 			loss = tf.losses.softmax_cross_entropy(y_, y)
 			optimizer = tf.train.GradientDescentOptimizer(0.1)
 			train = optimizer.minimize(loss)
-			
+
 			self.sess.run(train, feed_dict={"y_:0": np.array(nlabels), "x:0": np.array(ndata)})
-			
+
 			saver = tf.train.Saver(save_relative_paths = True)
 			save_path = saver.save(self.sess, "model/{0}/{0}".format(self.name))
 			print("{0} trained and saved in path: {1}".format(self.name, save_path))
 
+	    def MaxCords(self, GuessMatrix):
+	        max = 0
+	        maxcords = (0,0)
+	        for i in range(3):
+	            for j in range(3):
+	                if GuessMatrix[i,j] > max:
+	                    maxcords = (i,j)
+	                    max = GuessMatrix[i,j]
+	        return maxcords
 
 if __name__ == "__main__":
 	e = Bot()
