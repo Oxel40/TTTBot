@@ -66,6 +66,7 @@ class Bot:
 				pred[np.argmax(pred)] = 0
 
 			move = np.reshape(move, [3, 3])
+<<<<<<< HEAD
 			#Get the coordinates of the element with the
 			#highest probability value
 			clickCords = self.MaxCords(move)
@@ -86,6 +87,13 @@ class Bot:
 			return maxcords
 
 		def Train(self, data, labels, save=True, log=True, rate=0.1):
+=======
+			
+			return move if found else np.zeros([3, 3])
+		
+		
+		def Train(self, data, labels):
+>>>>>>> parent of 6d3b1d8... Nu värkar Trainern fungera
 			ndata = []
 			nlabels = []
 			for n in data:
@@ -99,13 +107,14 @@ class Bot:
 			y = graph.get_tensor_by_name(self.name+"y:0")
 
 			loss = tf.losses.softmax_cross_entropy(y_, y)
-			optimizer = tf.train.GradientDescentOptimizer(rate)
+			optimizer = tf.train.GradientDescentOptimizer(0.1)
 			train = optimizer.minimize(loss)
 
 			self.sess.run(train, feed_dict={self.name+"y_:0": np.array(nlabels), self.name+"x:0": np.array(ndata)})
 
 			#saver = tf.train.Saver(save_relative_paths = True)
 			#save_path = saver.save(self.sess, "model/{0}/{0}".format(self.name))
+<<<<<<< HEAD
 			if save and log:
 				save_path = self.Save()
 				print("{0} trained and saved in path: {1}".format(self.name, save_path))
@@ -115,6 +124,12 @@ class Bot:
 				print("{0} trained".format(self.name))
 
 
+=======
+			#save_path = self.Save()
+			#print("{0} trained and saved in path: {1}".format(self.name, save_path))
+		
+		
+>>>>>>> parent of 6d3b1d8... Nu värkar Trainern fungera
 		def Save(self):
 			try:
 				os.mkdir("model")
@@ -127,12 +142,9 @@ class Bot:
 			return save_path
 
 
-#some testing
 if __name__ == "__main__":
 	e = Bot()
-	if e.LoadBot("Charlie") == False:
-		e.NewBot("Charlie")
-	#e.NewBot("Charlie")#if Charlie needs to be created
+	e.NewBot("Charlie")#if Charlie needs to be created
 	#e.LoadBot("Charlie")
 	print(e.MakeMove(np.array([[1, -1, 1], [-1, 1, -1], [-1, 1, -1]])))
 	boards = [np.array([[0, 0, 0], [0, 0, 0], [ 0, 0, 0]]), np.array([[0, 0, 0], [0, 1, 0], [0, 0, 0]])]
