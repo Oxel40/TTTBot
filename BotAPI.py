@@ -65,9 +65,24 @@ class Bot:
 				pred[np.argmax(pred)] = 0
 
 			move = np.reshape(move, [3, 3])
+			#Get the coordinates of the element with the
+			#highest probability value
+			clickCords = self.MaxCords(move)
+			#collect some data in the process
+			decision = np.zeros((3,3))
+			decision[clickCords[0],clickCords[1]] = 1
+			self.Decision.append((copy(board), decision))
+			return clickCords
 
-			return move if found else np.zeros([3, 3])
-
+		def MaxCords(self, GuessMatrix):
+			max = 0
+			maxcords = (0,0)
+			for i in range(3):
+				for j in range(3):
+					if GuessMatrix[i,j] > max:
+						maxcords = (i,j)
+						max = GuessMatrix[i,j]
+			return maxcords
 
 		def Train(self, data, labels, save=True, log=True, rate=0.1):
 			ndata = []
