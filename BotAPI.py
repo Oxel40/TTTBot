@@ -1,6 +1,7 @@
 import tensorflow as tf
 import numpy as np
 import os
+from copy import copy
 
 class Bot:
 	with tf.Session() as sess:
