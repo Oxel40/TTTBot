@@ -127,7 +127,15 @@ class Bot:
 			self.Decision.append((copy(GameMatrixState), decision))
 			return clickCords
 
-
+		def MaxCords(self, GuessMatrix):
+					max = 0
+					maxcords = (0,0)
+					for i in range(3):
+						for j in range(3):
+							if GuessMatrix[i,j] > max:
+								maxcords = (i,j)
+								max = GuessMatrix[i,j]
+					return maxcords
 if __name__ == "__main__":
 	e = Bot()
 	e.NewBot("Tom")#if Charlie needs to be created
