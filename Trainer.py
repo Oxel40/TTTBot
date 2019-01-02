@@ -132,6 +132,12 @@ for game in range(games):
 	if win:
 		inputs.extend(moves[0][turn % 2 :: 2])#Wining moves
 		lables.extend(moves[1][turn % 2 :: 2])#
+		inputs.append(moves[0][-1] * -1)#Wining move counter
+		lables.append(moves[1][-1])#
+		inputs.append(moves[0][-1] * -1)#Wining move counter
+		lables.append(moves[1][-1])#
+		inputs.append(moves[0][-1])#Wining move
+		lables.append(moves[1][-1])#
 		for index in range((turn + 1) % 2, turn + 1, 2):
 			inputs.append(moves[0][index])
 			lables.append(non_losing_moves(moves[0][index], moves[1][index]))
@@ -140,9 +146,9 @@ for game in range(games):
 			inputs.append(moves[0][index])
 			lables.append(non_losing_moves(moves[0][index], moves[1][index]))
 
-	#for te in range(len(inputs)):
-	#	print(inputs[te])
-	#	print(lables[te])
+	for te in range(len(inputs)):
+		print(inputs[te], "i")
+		print(lables[te], "l")
 	#print(moves)
 	c.Train(inputs, lables, save = False, log = False, rate = rate)
 
