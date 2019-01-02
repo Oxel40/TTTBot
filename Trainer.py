@@ -2,6 +2,7 @@ import numpy as np
 import BotAPI
 import argparse
 from copy import copy
+import LoadingBar as lb
 
 #Returns alowed moves in a numpy array
 def alowed_moves(board):
@@ -85,6 +86,8 @@ if len(bots) > 1:
 	if d.LoadBot(bots[1]) == False:
 		d.NewBot(bots[1])
 
+loadingbar = lb.SimpleLoadingBar()
+loadingbar.Start(msg = "Training...")
 
 for game in range(games):
 	board = np.array([[0., 0., 0.], [0., 0., 0.], [0., 0., 0.]])
@@ -150,7 +153,9 @@ for game in range(games):
 	#sess.run(train, feed_dict={y_: np.array(lables), x: np.array(inputs)})
 	#print(sess.run(loss,  feed_dict={y_: np.array(lables), x: np.array(inputs)}))
 	#print("-"*10)
+	loadingbar.Set(game*1000//games/1000)
 
+loadingbar.Finnish(msg = "Training... Done")
 print(c.name, "trained and saved at", c.Save())
 if len(bots) > 1:
 	print(d.name, "trained and saved at", d.Save())

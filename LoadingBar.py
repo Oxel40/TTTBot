@@ -8,7 +8,7 @@ class SimpleLoadingBar:
 	def Set(self, prog, **kwar):
 		if "msg" in kwar:
 			self.msg =  kwar["msg"]
-			msg =  kwar["msg"]
+			#msg =  kwar["msg"]
 		self.prog = prog
 		out = "\r[{0}{1}]{2}% {3}".format("#"*int(20*self.prog), " "*(20-int(20*self.prog)), self.prog*100, self.msg)
 		if self.maxout > len(out):
@@ -25,7 +25,7 @@ class SimpleLoadingBar:
 		
 	#Start a new loadingbar.
 	def Start(self, **kwar):
-		self.prog = 0
+		self.prog = 0.
 		self.maxout = 0
 		self.msg = ""
 		if "msg" in kwar:
