@@ -9,6 +9,7 @@ class Bot:
 			self.name = None
 			self.Decision = []
 
+
 		def NewBot(self, new_name):
 			#NOTE: This funktion overwrites any existing models with same name!
 			self.name = new_name
@@ -127,6 +128,7 @@ class Bot:
 			self.Decision.append((copy(GameMatrixState), decision))
 			return clickCords
 
+
 		def MaxCords(self, GuessMatrix):
 					max = 0
 					maxcords = (0,0)
@@ -136,11 +138,17 @@ class Bot:
 								maxcords = (i,j)
 								max = GuessMatrix[i,j]
 					return maxcords
+
+		def ListBots(self):
+			return list(os.walk("model"))[0][1]
+
+
 if __name__ == "__main__":
 	e = Bot()
-	e.NewBot("Tom")#if Charlie needs to be created
+	#e.NewBot("Tom")
 	#e.LoadBot("Charlie")
-	print(e.MakeMove(np.array([[1, -1, 1], [-1, 1, -1], [-1, 1, -1]])))
-	boards = [np.array([[0, 0, 0], [0, 0, 0], [ 0, 0, 0]]), np.array([[0, 0, 0], [0, -1, 0], [0, 0, 0]])]
-	moves = [np.array([[0, 0, 0], [0, 1, 0], [0, 0, 0]]), np.array([[0, 0, 0], [1, 0, 0], [0, 0, 0]])]
-	e.Train(boards, moves)
+	#print(e.MakeMove(np.array([[1, -1, 1], [-1, 1, -1], [-1, 1, -1]])))
+	#boards = [np.array([[0, 0, 0], [0, 0, 0], [ 0, 0, 0]]), np.array([[0, 0, 0], [0, -1, 0], [0, 0, 0]])]
+	#moves = [np.array([[0, 0, 0], [0, 1, 0], [0, 0, 0]]), np.array([[0, 0, 0], [1, 0, 0], [0, 0, 0]])]
+	#e.Train(boards, moves)
+	print(e.ListBots())
