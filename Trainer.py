@@ -52,6 +52,8 @@ parser.add_argument("--bots", "-b", help='Specify witch bot/bots used in trainin
 
 parser.add_argument("--games", "-g", help='Specify the number of games to be played during the training session. If games is not specified the number of games will be 20.')
 
+parser.add_argument("--rate", "-r", help='Specify the learningrate used in training. If not set then the default 0.1 will be used.')
+
 # read arguments from the command line
 args = parser.parse_args()
 
@@ -64,22 +66,27 @@ for b in bots:
 
 games = 20
 if args.games:
-	games = args.games
+	games = int(args.games)
 print(games, "games will be played")
 
+rate = 0.1
+if args.rate:
+	rate = float(args.rate)
+print(rate, "will be used as the learningrate")
 
+#print(len(bots))
 
 c = BotAPI.Bot()
 if c.LoadBot(bots[0]) == False:
 	c.NewBot(bots[0])
 
-if len(bots) < 1:
+if len(bots) > 1:
 	d = BotAPI.Bot()
 	if d.LoadBot(bots[1]) == False:
 		d.NewBot(bots[1])
 
 
-for game in range(int(games)):
+for game in range(games):
 	board = np.array([[0., 0., 0.], [0., 0., 0.], [0., 0., 0.]])
 	moves = [[], []]#move[0] is the inputed board layout, move[1] is the outputed move
 	win = False
@@ -98,7 +105,7 @@ for game in range(int(games)):
 			#print(board, "r")
 			#print("-"*20)
 		else:
-			if len(bots) < 1:
+			if len(bots) > 1:
 				move = d.MakeMove(board)
 			else:
 				move = c.MakeMove(board)
@@ -134,10 +141,10 @@ for game in range(int(games)):
 	#	print(inputs[te])
 	#	print(lables[te])
 	#print(moves)
-	c.Train(inputs, lables, save = False, log = False)
+	c.Train(inputs, lables, save = False, log = False, rate = rate)
 
-	if len(bots) < 1:
-		d.Train(inputs, lables, save = False, log = False)
+	if len(bots) > 1:
+		d.Train(inputs, lables, save = False, log = False, rate = rate)
 	#print(game)
 	#print(sess.run(loss,  feed_dict={y_: np.array(lables), x: np.array(inputs)}))
 	#sess.run(train, feed_dict={y_: np.array(lables), x: np.array(inputs)})
@@ -145,5 +152,5 @@ for game in range(int(games)):
 	#print("-"*10)
 
 print(c.name, "trained and saved at", c.Save())
-if len(bots) < 1:
+if len(bots) > 1:
 	print(d.name, "trained and saved at", d.Save())

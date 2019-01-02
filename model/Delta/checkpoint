@@ -1,0 +1,2 @@
+model_checkpoint_path: "Delta"
+all_model_checkpoint_paths: "Delta"
