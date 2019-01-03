@@ -49,11 +49,13 @@ def non_losing_moves(board, lmove):
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument("--bots", "-b", help='Specify witch bot/bots used in training. To specify two bots for training their names should be seperated by a ", ". E.g: -b "bot1, bot2". If ony one bot is specified then it will play agains it self. If no bot is specified then Charlie will be used during the training session.')
+parser.add_argument("--bots", "-b", help='Specify witch bot/bots used in training. To specify two bots for training their names should be seperated by a ", ". E.g: -b "bot1, bot2". If ony one bot is specified then it will play agains it self. If no bot is specified then "Charlie" will be used during the training session.')
 
 parser.add_argument("--games", "-g", help='Specify the number of games to be played during the training session. If games is not specified the number of games will be 20.')
 
 parser.add_argument("--rate", "-r", help='Specify the learningrate used in training. If not set then the default 0.1 will be used.')
+
+parser.add_argument("--interval", "-i", help='Specify the interval in witch the bot(s) will be saved during the training session. If no interval is set then the bot(s) will ony be saved after the training session.')
 
 # read arguments from the command line
 args = parser.parse_args()
@@ -68,13 +70,19 @@ for b in bots:
 games = 20
 if args.games:
 	games = int(args.games)
-print(games, "games will be played")
+print(games, "game(s) will be played")
 
 rate = 0.1
 if args.rate:
 	rate = float(args.rate)
 print(rate, "will be used as the learningrate")
 
+interval = games
+if args.interval:
+	interval = int(args.interval)
+	print("Bot(s) will be saved after every", interval, "games")
+else:
+	print("Bot(s) will only be saved after the training session")
 #print(len(bots))
 
 c = BotAPI.Bot()
@@ -86,8 +94,9 @@ if len(bots) > 1:
 	if d.LoadBot(bots[1]) == False:
 		d.NewBot(bots[1])
 
+mess = ["Training...", ""]
 loadingbar = lb.SimpleLoadingBar()
-loadingbar.Start(msg = "Training...")
+loadingbar.Start(msg = mess[0])
 
 for game in range(games):
 	board = np.array([[0., 0., 0.], [0., 0., 0.], [0., 0., 0.]])
@@ -146,9 +155,9 @@ for game in range(games):
 			inputs.append(moves[0][index])
 			lables.append(non_losing_moves(moves[0][index], moves[1][index]))
 
-	for te in range(len(inputs)):
-		print(inputs[te], "i")
-		print(lables[te], "l")
+	#for te in range(len(inputs)):
+	#	print(inputs[te], "i")
+	#	print(lables[te], "l")
 	#print(moves)
 	c.Train(inputs, lables, save = False, log = False, rate = rate)
 
@@ -159,7 +168,15 @@ for game in range(games):
 	#sess.run(train, feed_dict={y_: np.array(lables), x: np.array(inputs)})
 	#print(sess.run(loss,  feed_dict={y_: np.array(lables), x: np.array(inputs)}))
 	#print("-"*10)
-	loadingbar.Set(game*1000//games/1000)
+	if game % interval == 0:
+		c.Save()
+		mess[1] = " " + c.name
+		if len(bots) > 1:
+			d.Save()
+			mess[1] += " and " + d.name
+		mess[1] += " saved at game " + str(game)
+	
+	loadingbar.Set(game*1000//games/1000, msg = mess[0] + mess[1])
 
 loadingbar.Finnish(msg = "Training... Done")
 print(c.name, "trained and saved at", c.Save())

@@ -139,6 +139,7 @@ class Bot:
 								max = GuessMatrix[i,j]
 					return maxcords
 
+
 		def ListBots(self):
 			return list(os.walk("model"))[0][1]
 
