@@ -10,7 +10,7 @@ class SimpleLoadingBar:
 			self.msg =  kwar["msg"]
 			#msg =  kwar["msg"]
 		self.prog = prog
-		out = "\r[{0}{1}]{2}% {3}".format("#"*int(20*self.prog), " "*(20-int(20*self.prog)), self.prog*100, self.msg)
+		out = "\r[{0}{1}]{2}% {3}".format("#"*int(20*self.prog), " "*(20-int(20*self.prog)), round(self.prog*100, 2), self.msg)
 		if self.maxout > len(out):
 			out += " "*(self.maxout-len(out))
 		else:

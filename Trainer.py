@@ -168,7 +168,7 @@ for game in range(games):
 	#sess.run(train, feed_dict={y_: np.array(lables), x: np.array(inputs)})
 	#print(sess.run(loss,  feed_dict={y_: np.array(lables), x: np.array(inputs)}))
 	#print("-"*10)
-	if game % interval == 0:
+	if game % interval == 0 and game != 0:
 		c.Save()
 		mess[1] = " " + c.name
 		if len(bots) > 1:
@@ -176,9 +176,11 @@ for game in range(games):
 			mess[1] += " and " + d.name
 		mess[1] += " saved at game " + str(game)
 	
-	loadingbar.Set(game*1000//games/1000, msg = mess[0] + mess[1])
+	loadingbar.Set(game/games, msg = mess[0] + mess[1])
 
 loadingbar.Finnish(msg = "Training... Done")
 print(c.name, "trained and saved at", c.Save())
+c.Close()
 if len(bots) > 1:
 	print(d.name, "trained and saved at", d.Save())
+	d.Close()
