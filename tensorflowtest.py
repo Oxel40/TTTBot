@@ -1,5 +1,7 @@
 import tensorflow as tf
 
+print(tf.__version__)
+
 class test1:
 	def __init__(self):
 		self.sess = tf.Session()
