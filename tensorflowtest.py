@@ -1,19 +1,38 @@
 import tensorflow as tf
 
-x = tf.placeholder(tf.float32, shape = [None, 1])
-W1 = tf.constant(2, dtype = tf.float32, shape = [1,1])
-y = tf.matmul(x, W1)
+class test1:
+	def __init__(self):
+		self.sess = tf.Session()
 
-sess1 = tf.Session()
-sess1.run(tf.global_variables_initializer())
+		self.x = tf.placeholder(tf.float32, shape = [None, 1])
+		self.W1 = tf.constant(2, dtype = tf.float32, shape = [1,1])
+		self.y = tf.matmul(self.x, self.W1)
+		
+		self.sess.run(tf.global_variables_initializer())
+	
+	def run(self):
+		print(self.sess.run(self.y, feed_dict = {self.x: [[1], [2], [3], [4]]}))
+	
+	def end(self):
+		self.sess.close()
 
-print(sess1.run(W1))
+class test2:
+	with tf.Session() as sess:
+		def __init__(self):
+			self.x = tf.placeholder(tf.float32, shape = [None, 1])
+			self.W1 = tf.constant(3, dtype = tf.float32, shape = [1,1])
+			self.y = tf.matmul(self.x, self.W1)
+			
+			self.sess.run(tf.global_variables_initializer())
+		
+		def run(self):
+			print(self.sess.run(self.y, feed_dict = {self.x: [[1], [2], [3], [4]]}))
 
-print(sess1.run(y, feed_dict={x : [[1],[2],[3],[4]]}))
 
-sess1.close()
+e = test1()
+e.run()
+e.end()
 
-with tf.Session() as sess:
-	print(sess.run(W1))
+q = test2()
+q.run()
 
-	print(sess.run(y, feed_dict={x : [[1],[2],[3],[4]]}))
